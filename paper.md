@@ -228,7 +228,7 @@ The immediate next steps are:
 3. Add adversarial tests for pause enforcement, dangerous `transferFrom` calls, malformed calldata, and unsupported execution modes.[^1][^4]
 4. Define and test an explicit native-asset and multi-token spending policy, or clearly scope the implementation to its tracked asset.[^1][^4]
 5. Evaluate delayed and cross-agent workflows with a reproducible sequence of operations and clear success criteria.[^2][^5]
-6. Report ACEGuard and HookV1 results separately before drawing architectural comparisons.[^1][^3]
+6. Assess the residual gap between agent-generated intent and on-chain execution standards generally considered safe and valid.
 
 Any new security claim should be tied to a test, invariant, or stated assumption. Failed or inconclusive attacks should be reported rather than omitted.[^4]
 
@@ -241,6 +241,33 @@ The recorded test baseline shows that selected target, selector, call-count, ini
 The central conclusion is conditional. Deterministic guards can enforce explicit, machine-checkable operation constraints when the relevant execution path is covered, the policy is correctly configured, and the enforcement mechanism cannot be bypassed.[^1][^3] They cannot, by themselves, guarantee that permitted actions are harmless, that every asset and execution route is covered, or that harmful intent will be recognized across delayed or delegated workflows.[^2][^5]
 
 The next phase will therefore test the enforcement boundary and its integration assumptions before stronger claims about adversarial robustness can be justified.[^1][^3][^4]
+
+## Reproducibility
+
+### Source code
+
+The implementations and regression tests are maintained in the Settled Protocol repository:
+
+- **Repository:** [ACE-2026-10-26-01](https://github.com/Settled-sbs/ACE-2026-10-25-01.git)
+- **Commit:** [insert the full Git commit hash corresponding to the tested code]
+- **Working-tree status:** [clean, or describe any uncommitted changes included in the reported experiment]
+
+### Software environment
+
+The experiments were conducted using platform: linux -- Python 3.11.14, pytest-8.4.2, pluggy-1.6.0, Ape 0.8.50, and Vyper 0.4.3+commit.bff19ea2. Compiler and network settings are documented in `ape-config.yaml`.
+
+### Test execution
+
+ACEGuard and HookV1 were evaluated using separate test commands against a local EVM environment. The exact commands and observed outcomes were:
+
+- **ACEGuard:**  uv run ape test tests/test_aceguard_regression.py  --network ethereum:local:foundry -vv; 20 passed, 0 failed, 0 deselected.
+- **HookV1:** uv run ape test tests/test_hookv1_integration.py  --network ethereum:local:foundry -vv; 7 passed, 0 failed, 0 deselected.
+
+### Execution environment and scope
+
+The tests were repeated across local execution environments, including a Robinhood-style configuration, for a total of 106 runs. The observed results were identical across all executions. Results establish the behavior of the tested contract paths under the specified configuration; they do not independently establish production deployment security or complete execution-path coverage.
+
+The repository revision, dependency configuration, and test commands are provided to support independent reproduction of the reported results.
 
 [^1]: Ethereum Improvement Proposal 7579. "Minimal Modular Account Interface." Ethereum Foundation / ERC. 2024.
 [^2]: Greshake, K., Abdelnabi, S., Mishra, S., et al. "Not what you've signed up for: Compromising Real World LLM-Integrated Applications." arXiv preprint, 2023.

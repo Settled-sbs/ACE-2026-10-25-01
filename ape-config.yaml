@@ -1,1 +1,5 @@
 name: ace_10_25_2026_01
+
+plugins: 
+  - name: vyper
+  
